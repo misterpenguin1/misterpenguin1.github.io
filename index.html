@@ -1,0 +1,229 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>listy</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<style>
+.toggle{
+	width:48px;
+	height:48px;
+	border:solid 1px #9C9C9C;
+	display:inline-block;
+}
+.listText{
+	display:inline-block;
+	vertical-align:top;
+	padding-top:12px;
+	padding-left:12px;
+	text-align:center;
+}
+</style>
+<script>
+function getHexAlpha(colorVal){
+	console.log(colorVal);
+	if(colorVal>1){
+		colorVal=1;
+	}
+	hexColor = Math.floor(colorVal*255).toString(16);
+	if(hexColor.length<2){hexColor='0'+hexColor;}
+	return hexColor;
+}
+function toggle(itemID,id){
+	console.log(id);
+	listData[itemID]['toggles'][id]['toggle']=!listData[itemID]['toggles'][id]['toggle'];
+	//this is where color is handled....
+	//okay so we add +0.5
+	if(listData[itemID]['toggles'][id]['toggle']){
+		listData[itemID]['toggles'][id]['color']+=dateWeight;
+	}else{
+		listData[itemID]['toggles'][id]['color']-=dateWeight;
+	}
+	if(listData[itemID]['toggles'][id]['color']!=0){
+		$('#'+id).css('background-color','#ff66cc'+getHexAlpha(listData[itemID]['toggles'][id]['color']));
+	}else{
+		$('#'+id).css('background-color','#ffffff');
+	}
+	saveList();
+}
+function saveList(){
+	localStorage.todoList = JSON.stringify(listData);
+	listDataDates[today]=listData;
+	localStorage.todoListDates = JSON.stringify(listDataDates);
+}
+function loadList(){
+	try{
+		listData = JSON.parse(localStorage.todoList);
+	}catch(e){
+		listData={}
+	}
+	//k load dates
+	try{
+		listDataDates = JSON.parse(localStorage.todoListDates);
+	}catch(e){
+		listDataDates={};
+	}
+	if(!(today in listDataDates)){
+		listDataDates[today]={};
+	}
+	
+	for(l in listData){
+		for(t in listData[l]['toggles']){
+			listData[l]['toggles'][t]['color']=0;
+			listData[l]['toggles'][t]['toggle']=false;
+		}
+	}
+	
+	buildDateColorData();
+	
+	for(l in listData){
+		addListItem(listData[l]);
+	}
+}
+
+dateWeights = [0.35,0.25,0.14,0.11,0.08,0.07];
+dateWeight=dateWeights[0];
+function buildDateColorData(){
+	//use listDataDates to uhhh
+	//idk iterate through previous week
+	//n then hafta, ffs? O_o;
+	//okay so put listData by item id into listDataDates
+	//and then for each toggle
+	//we just need a 0 or 1
+	
+	//...and then do a forkin colir gradient
+	//fer each fingeh
+	//so i mean let's
+	//start wiffs dis
+	
+	//dateWeights = [.5,.3,.15,.075,0.0325,0.01625];//k but let's fix that
+	//dateWeights = [0.35,0.25,0.14,0.11,0.08,0.07];//betrars
+	//moved that ^
+	
+	for(var i=0;i<7;i++){		
+		dateCheck = new Date();
+		dateCheck.setDate(dateCheck.getDate()-i);
+		dateToCheck = dateCheck.getFullYear()+'_'+(dateCheck.getMonth()+1)+'_'+dateCheck.getDate();
+		
+		console.log('CHECK: ' + dateToCheck);
+		if(dateToCheck in listDataDates){
+			//kay so check everything in listDate
+			console.log("CHECKING: " + dateToCheck);
+			for(l in listData){
+				console.log("CHECKING.... " + l);
+				if(l in listDataDates[dateToCheck]){
+					console.log('ADDINGS: ' + JSON.stringify(listDataDates[dateToCheck]));
+					for(t in listData[l]['toggles']){
+						//if('toggles' in listDataDates[l]){
+						//	console.log(listDataDates[l]['toggles']);
+						if(listDataDates[dateToCheck][l]['toggles'][t]['toggle']){
+							listData[l]['toggles'][t]['color']+=dateWeights[i];
+							if(i==0){
+								listData[l]['toggles'][t]['toggle']=listDataDates[dateToCheck][l]['toggles'][t]['toggle'];
+							}
+						}
+							console.log('has date: ' + listData[l]['toggles'][t]['color']);
+						//}
+					}
+				}else{
+					listDataDates[l]={'toggles':{}};
+					for(t in listData[l]['toggles']){
+						listDataDates[l]['toggles'][t]={};
+						listDataDates[l]['toggles'][t]['color']=listData[l]['toggles'][t]['color'];
+						console.log('has no date: ' + listData[l]['toggles'][t]['color']);
+					}
+				}
+			}
+		}
+	}
+}
+
+
+maxID=0;
+function addListItem(dat){
+	//console.log("MAX: " + maxID);
+	if(!('id' in dat)){
+		listItemID='task'+maxID;
+		dat['id']=listItemID;
+		dat['toggles']={}
+		listData[listItemID]=dat;
+		maxID++;
+	}else{
+		listItemID=dat['id'];
+		if(listItemID.replace('task','')>=maxID){
+			maxID=listItemID.replace('task','')+1;
+		}
+	}
+	//console.log(maxID);
+	listList.push(listItemID);
+	listItemClass='col-3';//+(dat['count']*3);
+	listItem = $('<div />',{'class':'col '+listItemClass,'style':'padding-bottom:12px'});
+	listItemCount=dat['count'];
+	while(listItemCount>0){
+		toggleID=listItemID+'_'+listItemCount;
+		toggleBG='#ffffff';
+		//console.log(toggleID);
+		if(!(toggleID in listData[listItemID]['toggles'])){
+			listData[listItemID]['toggles'][toggleID]={'color':0,'toggle':false};
+		}else{
+			//console.log('has toggle');
+			//console.log(listData[listItemID]['toggles'][toggleID]['toggle']);
+			//if(listData[listItemID]['toggles'][toggleID]['toggle']==true){
+			toggleBG='#ff66cc'+getHexAlpha(listData[listItemID]['toggles'][toggleID]['color']);
+			//}
+		}
+		toggleClick = "toggle('"+listItemID+"','"+toggleID+"');";
+		//console.log('togglebg: '+toggleBG);
+		$('<div />',{'class':'toggle','id':toggleID,'onclick':toggleClick,'style':'background-color:'+toggleBG}).appendTo(listItem);
+		listItemCount--;
+	}
+	$('<div />',{'class':'listText','text':dat['title']}).appendTo(listItem);
+	listItem.appendTo($('#list'));
+	saveList();
+}
+listData={};
+listDataDates={};
+listList=[];
+date = new Date();
+date.setDate(date.getDate());
+today = date.getFullYear()+'_'+(date.getMonth()+1)+'_'+date.getDate();
+console.log(today);
+
+function addTask(){
+	addListItem({"title":$("#task").val(),"count":$("#count").val()});
+	$("#task").val("");
+	$("#count").val("");
+}
+function toggleAdd(){
+	if($("#addItem").css('display')=='flex'){
+		$("#addItem").css('display','none');
+	}else{
+		$("#addItem").css('display','flex');
+	}
+}
+</script>
+</head>
+<body>
+<div class="container-responsive">
+		<div onclick="toggleAdd()"	style="background-color: rgba(255, 102, 204, 0.35);width:32px;height:32px;"></div>
+	<div class="row" style="padding:32px;display:none;" id="addItem">
+		<label for="task" style="padding-right:4px;">Task </label><input type="text" id="task"></input><br />
+		<label for="count" style="padding-right:4px;padding-left:12px;">Count </label><input type="text" id="count"></input><br />
+		<button type="submit" onclick="addTask()">Add Task</button>
+	</div>
+	<div class="row" style="padding:32px;" id="list">
+	</div>
+</div>
+<script>
+loadList();
+//addListItem({"title":"Brush Teefies","count":2});
+//addListItem({"title":"Brekkies","count":1});
+//addListItem({"title":"Elliptical","count":1});
+//addListItem({"title":"Shawur","count":1});
+//addListItem({"title":"Lunches","count":1});
+//addListItem({"title":"Bunny Onesie","count":1});
+saveList();
+</script>
+</body>
