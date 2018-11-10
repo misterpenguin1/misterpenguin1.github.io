@@ -173,6 +173,7 @@ function addListItem(dat){
 	while(listItemCount>0){
 		toggleID=listItemID+'_'+listItemCount;
 		toggleBG='#ffffff';
+		toggleOpacity=1;
 		//console.log(toggleID);
 		if(!(toggleID in listData[listItemID]['toggles'])){
 			listData[listItemID]['toggles'][toggleID]={'color':0,'toggle':false};
@@ -180,12 +181,13 @@ function addListItem(dat){
 			//console.log('has toggle');
 			//console.log(listData[listItemID]['toggles'][toggleID]['toggle']);
 			//if(listData[listItemID]['toggles'][toggleID]['toggle']==true){
-			toggleBG='#ff66cc'+getHexAlpha(listData[listItemID]['toggles'][toggleID]['color']);
+			toggleBG='#ff66cc';
+			toggleOpacity=listData[listItemID]['toggles'][toggleID]['color'];
 			//}
 		}
 		toggleClick = "toggle('"+listItemID+"','"+toggleID+"');";
 		//console.log('togglebg: '+toggleBG);
-		$('<div />',{'class':'toggle','id':toggleID,'onclick':toggleClick,'style':'background-color:'+toggleBG+'vertical-align:middle;'}).appendTo(listItem);
+		$('<div />',{'class':'toggle','id':toggleID,'onclick':toggleClick,'style':'background-color:'+toggleBG+';vertical-align:middle;opacity:'+toggleOpacity}).appendTo(listItem);
 		listItemCount--;
 	}
 	$('<div />',{'class':'listText','text':dat['title']}).appendTo(listItem);
