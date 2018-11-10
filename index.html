@@ -8,8 +8,8 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <style>
 .toggle{
-	width:48px;
-	height:48px;
+	width:84px;
+	height:84px;
 	border:solid 1px #9C9C9C;
 	display:inline-block;
 }
@@ -19,6 +19,11 @@
 	padding-top:12px;
 	padding-left:12px;
 	text-align:center;
+	font-size:48px;
+	font-weight:bold;
+	font-family: "Segoe UI";
+}
+.body{
 }
 </style>
 <script>
@@ -162,7 +167,7 @@ function addListItem(dat){
 	}
 	//console.log(maxID);
 	listList.push(listItemID);
-	listItemClass='col-3';//+(dat['count']*3);
+	listItemClass='col-6';//+(dat['count']*3);
 	listItem = $('<div />',{'class':'col '+listItemClass,'style':'padding-bottom:12px'});
 	listItemCount=dat['count'];
 	while(listItemCount>0){
@@ -180,7 +185,7 @@ function addListItem(dat){
 		}
 		toggleClick = "toggle('"+listItemID+"','"+toggleID+"');";
 		//console.log('togglebg: '+toggleBG);
-		$('<div />',{'class':'toggle','id':toggleID,'onclick':toggleClick,'style':'background-color:'+toggleBG}).appendTo(listItem);
+		$('<div />',{'class':'toggle','id':toggleID,'onclick':toggleClick,'style':'background-color:'+toggleBG+'vertical-align:middle;'}).appendTo(listItem);
 		listItemCount--;
 	}
 	$('<div />',{'class':'listText','text':dat['title']}).appendTo(listItem);
