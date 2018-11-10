@@ -41,9 +41,11 @@ function toggle(itemID,id){
 	}else{
 		listData[itemID]['toggles'][id]['color']-=dateWeight;
 	}
+	console.log('setting to: ' + '#ff66cc'+getHexAlpha(listData[itemID]['toggles'][id]['color']));
 	if(listData[itemID]['toggles'][id]['color']!=0){
 		$('#'+id).css('background-color','#ff66cc'+getHexAlpha(listData[itemID]['toggles'][id]['color']));
 	}else{
+		console.log('setting to: ' + 'ffffffffffffffffffffffffffffffffff');
 		$('#'+id).css('background-color','#ffffff');
 	}
 	saveList();
