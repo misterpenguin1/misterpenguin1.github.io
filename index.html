@@ -231,6 +231,11 @@ function resetTasks(){
 		reset=0;
 	}
 }
+window.setInterval(function(){
+	date = new Date();
+	date.setDate(date.getDate());
+	today = date.getFullYear()+'_'+(date.getMonth()+1)+'_'+date.getDate();
+},600000);
 </script>
 </head>
 <body style="overflow:hidden;">
@@ -248,7 +253,7 @@ function resetTasks(){
 </div>
 <script>
 loadList();
-[]=//addListItem({"title":"Brekkies","count":1});
+//[]=//addListItem({"title":"Brekkies","count":1});
 //addListItem({"title":"Elliptical","count":1});
 //addListItem({"title":"Shawur","count":1});
 //addListItem({"title":"Lunches","count":1});
