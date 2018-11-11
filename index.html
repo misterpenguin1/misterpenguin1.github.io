@@ -210,12 +210,24 @@ function addTask(){
 	addListItem({"title":$("#task").val(),"count":$("#count").val()});
 	$("#task").val("");
 	$("#count").val("");
+	reset=0;
 }
 function toggleAdd(){
 	if($("#addItem").css('display')=='flex'){
 		$("#addItem").css('display','none');
 	}else{
 		$("#addItem").css('display','flex');
+	}
+	reset=0;
+}
+reset=0;
+function resetTasks(){
+	reset++;
+	$('#resetTasks').text('Delete All Tasks Forever: ' + reset+'/5');
+	if(reset>4){
+		localStorage.todoList={};
+		localStorage.todoListDates={};
+		reset=0;
 	}
 }
 </script>
@@ -227,6 +239,8 @@ function toggleAdd(){
 		<label for="task" style="padding-right:4px;">Task </label><input type="text" id="task"></input><br />
 		<label for="count" style="padding-right:4px;padding-left:12px;">Count </label><input type="text" id="count"></input><br />
 		<button type="submit" onclick="addTask()">Add Task</button>
+		<br><br><br>	
+		<button type="submit" id="resetTasks" onclick="resetTasks()">Delete All Tasks Forever</button>
 	</div>
 	<div class="row" style="padding:32px;" id="list">
 	</div>
