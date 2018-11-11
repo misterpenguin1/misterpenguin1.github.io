@@ -235,6 +235,9 @@ window.setInterval(function(){
 	date = new Date();
 	date.setDate(date.getDate());
 	today = date.getFullYear()+'_'+(date.getMonth()+1)+'_'+date.getDate();
+	if(today!='asdfasdf'){
+		localStorage.todoList={};
+	}
 },600000);
 </script>
 </head>
