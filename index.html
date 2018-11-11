@@ -182,7 +182,11 @@ function addListItem(dat){
 			//console.log(listData[listItemID]['toggles'][toggleID]['toggle']);
 			//if(listData[listItemID]['toggles'][toggleID]['toggle']==true){
 			toggleBG='#ff66cc';
-			toggleOpacity=listData[listItemID]['toggles'][toggleID]['color'];
+			if(listData[listItemID]['toggles'][toggleID]['color']!=0){
+				toggleOpacity=listData[listItemID]['toggles'][toggleID]['color'];
+			}else{
+				toggleOpacity=1;
+			}
 			//}
 		}
 		toggleClick = "toggle('"+listItemID+"','"+toggleID+"');";
