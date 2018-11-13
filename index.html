@@ -128,7 +128,7 @@ function buildDateColorData(){
 					for(t in listData[l]['toggles']){
 						//if('toggles' in listDataDates[l]){
 						//	console.log(listDataDates[l]['toggles']);
-						if(listDataDates[dateToCheck][l]['toggles'][t]['toggle']){
+						if(listDataDates[dateToCheck][l]['toggles'][t]['color']!=0){
 							listData[l]['toggles'][t]['color']+=dateWeights[i];
 							if(i==0){
 								listData[l]['toggles'][t]['toggle']=listDataDates[dateToCheck][l]['toggles'][t]['toggle'];
