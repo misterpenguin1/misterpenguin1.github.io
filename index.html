@@ -138,11 +138,11 @@ function buildDateColorData(){
 						//}
 					}
 				}else{
-					listDataDates[l]={'toggles':{}};
-					for(t in listData[l]['toggles']){
-						listDataDates[l]['toggles'][t]={};
-						listDataDates[l]['toggles'][t]['color']=listData[l]['toggles'][t]['color'];
-						console.log('has no date: ' + listData[l]['toggles'][t]['color']);
+					listDataDates[dateToCheck][l]={'toggles':{}};
+					for(t in listData[dateToCheck][l]['toggles']){
+						listDataDates[dateToCheck][l]['toggles'][t]={};
+						listDataDates[dateToCheck][l]['toggles'][t]['color']=listData[dateToCheck][l]['toggles'][t]['color'];
+						console.log('has no date: ' + listData[dateToCheck][l]['toggles'][t]['color']);
 					}
 				}
 			}
@@ -285,6 +285,11 @@ window.setInterval(function(){
 	if(today!=newtoday){
 		localStorage.todoList={};
 		today = newtoday;
+		for(l in listData){
+			for(t in listData[l]['toggles']){
+				listData[l]['toggles'][t]['toggle']=false;
+			}
+		}
 	}
 },600000);
 </script>
@@ -314,6 +319,7 @@ window.setInterval(function(){
 <script>
 loadList();
 populateListEditor();
+localStorage.todoListDates={};
 //[]=//addListItem({"title":"Brekkies","count":1});
 //addListItem({"title":"Elliptical","count":1});
 //addListItem({"title":"Shawur","count":1});
