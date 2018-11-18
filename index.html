@@ -111,7 +111,11 @@ function buildDateColorData(){
 	//dateWeights = [.5,.3,.15,.075,0.0325,0.01625];//k but let's fix that
 	//dateWeights = [0.35,0.25,0.14,0.11,0.08,0.07];//betrars
 	//moved that ^
-	
+	for(l in listData){
+		for(t in listData[l]['toggles']){
+			listData[l]['toggles'][t]['color']=0;
+		}
+	}
 	for(var i=0;i<7;i++){		
 		dateCheck = new Date();
 		dateCheck.setDate(dateCheck.getDate()-i);
@@ -128,7 +132,7 @@ function buildDateColorData(){
 					for(t in listData[l]['toggles']){
 						//if('toggles' in listDataDates[l]){
 						//	console.log(listDataDates[l]['toggles']);
-						if(listDataDates[dateToCheck][l]['toggles'][t]['color']!=0){
+						if((listDataDates[dateToCheck][l]['toggles'][t]['color']!=0 && i==0) || listDataDates[dateToCheck][l]['toggles'][t]['toggle']){
 							listData[l]['toggles'][t]['color']+=dateWeights[i];
 							if(i==0){
 								listData[l]['toggles'][t]['toggle']=listDataDates[dateToCheck][l]['toggles'][t]['toggle'];
@@ -283,13 +287,15 @@ window.setInterval(function(){
 	date.setDate(date.getDate());
 	newtoday = date.getFullYear()+'_'+(date.getMonth()+1)+'_'+date.getDate();
 	if(today!=newtoday){
-		localStorage.todoList={};
+		saveList();
+		//localStorage.todoList={};
 		today = newtoday;
 		for(l in listData){
 			for(t in listData[l]['toggles']){
 				listData[l]['toggles'][t]['toggle']=false;
 			}
 		}
+		saveList();
 	}
 },600000);
 </script>
