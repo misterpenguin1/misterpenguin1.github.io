@@ -76,26 +76,29 @@ function loadList(){
 		listDataDates={};
 	}
 	if(!(today in listDataDates)){
+		listData = listDataDates[today]
 		listDataDates[today]={};
 	}
-	
+	/*
 	for(l in listData){
 		for(t in listData[l]['toggles']){
 			listData[l]['toggles'][t]['color']=0;
 			listData[l]['toggles'][t]['toggle']=false;
 		}
-	}
+	}*/
 	
-	buildDateColorData();
+	buildDateColorData(0);
 	
+	console.log('listdata: ' + listData);
 	for(l in listData){
 		addListItem(listData[l]);
 	}
 }
 
-dateWeights = [0.35,0.25,0.14,0.11,0.08,0.07];
+//dateWeights = [0.35,0.25,0.14,0.11,0.08,0.07];
+dateWeights = [0.17,0.10,0.4,0.3,0.2,0.1];
 dateWeight=dateWeights[0];
-function buildDateColorData(){
+function buildDateColorData(offset){
 	//use listDataDates to uhhh
 	//idk iterate through previous week
 	//n then hafta, ffs? O_o;
@@ -118,7 +121,7 @@ function buildDateColorData(){
 	}
 	for(var i=0;i<7;i++){		
 		dateCheck = new Date();
-		dateCheck.setDate(dateCheck.getDate()-i);
+		dateCheck.setDate(dateCheck.getDate()-offset-i);
 		dateToCheck = dateCheck.getFullYear()+'_'+(dateCheck.getMonth()+1)+'_'+dateCheck.getDate();
 		
 		console.log('CHECK: ' + dateToCheck);
@@ -142,12 +145,12 @@ function buildDateColorData(){
 						//}
 					}
 				}else{
-					listDataDates[dateToCheck][l]={'toggles':{}};
+					/*listDataDates[dateToCheck][l]={'toggles':{}};
 					for(t in listData[dateToCheck][l]['toggles']){
 						listDataDates[dateToCheck][l]['toggles'][t]={};
 						listDataDates[dateToCheck][l]['toggles'][t]['color']=listData[dateToCheck][l]['toggles'][t]['color'];
 						console.log('has no date: ' + listData[dateToCheck][l]['toggles'][t]['color']);
-					}
+					}*/
 				}
 			}
 		}
@@ -158,6 +161,8 @@ function buildDateColorData(){
 maxID=0;
 function addListItem(dat){
 	//console.log("MAX: " + maxID);
+	console.log('dat');
+	console.log(dat);
 	if(!('id' in dat)){
 		listItemID='task'+maxID;
 		dat['id']=listItemID;
@@ -250,6 +255,34 @@ function populateListEditor(){
 		//<button type="submit" onclick="addTask()">Add Task</button>
 	}
 }
+function clear(){
+	$('#list').remove();
+	listData={};
+	listDataDates={};
+	listList=[];
+}
+function nextDate(){
+	dateOffset+=1;
+	$('#curDate').text(dateOffset);
+	date = new Date();
+	date.setDate(date.getDate()-dateOffset);
+	today = date.getFullYear()+'_'+(date.getMonth()+1)+'_'+date.getDate();
+	clear();
+	build();
+}
+function prevDate(){
+	dateOffset-=1;
+	$('#curDate').text(dateOffset);
+	date = new Date();
+	date.setDate(date.getDate()+dateOffset);
+	today = date.getFullYear()+'_'+(date.getMonth()+1)+'_'+date.getDate();
+	clear();
+	build();
+}
+function build(){
+	loadList();
+}
+dateOffset=0;
 listData={};
 listDataDates={};
 listList=[];
@@ -282,6 +315,7 @@ function resetTasks(){
 		reset=0;
 	}
 }
+/*
 window.setInterval(function(){
 	date = new Date();
 	date.setDate(date.getDate());
@@ -297,7 +331,7 @@ window.setInterval(function(){
 		}
 		saveList();
 	}
-},600000);
+},600000);*/
 </script>
 </head>
 <body style="overflow:hidden;">
@@ -316,6 +350,13 @@ window.setInterval(function(){
 		<div class="col-12">
 			<div class="row">
 				<div id="listEditor"></div>
+				<div class="col-12">
+					<div class="row">
+						<div onclick="prevDate()" style="background-color: rgba(255, 102, 204, 0.35);width:32px;height:32px;"></div>
+						<div id="curDate">0</div>
+						<div onclick="nextDate()" style="background-color: rgba(255, 102, 204, 0.35);width:32px;height:32px;"></div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
