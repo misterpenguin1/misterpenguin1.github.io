@@ -38,19 +38,20 @@ function getHexAlpha(colorVal){
 	return hexColor;
 }
 function toggle(itemID,id){
+	checkForNewDate();
 	console.log(id);
-	listData[itemID]['toggles'][id]['toggle']=!listData[itemID]['toggles'][id]['toggle'];
+	listData['dates'][today][itemID]['toggles'][id]['toggle']=!listData['dates'][today][itemID]['toggles'][id]['toggle'];
 	//this is where color is handled....
 	//okay so we add +0.5
-	if(listData[itemID]['toggles'][id]['toggle']){
-		listData[itemID]['toggles'][id]['color']+=dateWeight;
+	if(listData['dates'][today][itemID]['toggles'][id]['toggle']){
+		listData['dates'][today][itemID]['toggles'][id]['color']+=dateWeight;
 	}else{
-		listData[itemID]['toggles'][id]['color']-=dateWeight;
+		listData['dates'][today][itemID]['toggles'][id]['color']-=dateWeight;
 	}
-	console.log('setting to: ' + '#ff66cc'+getHexAlpha(listData[itemID]['toggles'][id]['color']));
-	if(listData[itemID]['toggles'][id]['color']!=0){
+	console.log('setting to: ' + '#ff66cc'+getHexAlpha(listData['dates'][today][itemID]['toggles'][id]['color']));
+	if(listData['dates'][today][itemID]['toggles'][id]['color']!=0){
 		$('#'+id).css('background-color','#ff66cc');//+getHexAlpha(listData[itemID]['toggles'][id]['color']));
-		$('#'+id).css('opacity',listData[itemID]['toggles'][id]['color']);
+		$('#'+id).css('opacity',listData['dates'][today][itemID]['toggles'][id]['color']);
 	}else{
 		console.log('setting to: ' + 'ffffffffffffffffffffffffffffffffff');
 		$('#'+id).css('background-color','#ffffff');
@@ -60,24 +61,42 @@ function toggle(itemID,id){
 }
 function saveList(){
 	localStorage.todoList = JSON.stringify(listData);
-	listDataDates[today]=listData;
-	localStorage.todoListDates = JSON.stringify(listDataDates);
 }
 function loadList(){
+	//k load dates
 	try{
 		listData = JSON.parse(localStorage.todoList);
 	}catch(e){
-		listData={}
+		listData={'dates':{},'index':0};
 	}
-	//k load dates
-	try{
-		listDataDates = JSON.parse(localStorage.todoListDates);
-	}catch(e){
-		listDataDates={};
+	if(!('dates' in listData)){
+		listData={'dates':{},'index':0};
 	}
-	if(!(today in listDataDates)){
-		listData = listDataDates[today]
-		listDataDates[today]={};
+	if(!(today in listData['dates'])){
+		//listData['dates'][today]={};
+		//this is where logic to populate goes
+		
+		
+		prevDates=0;
+		lastKnownDate='1942-2-1';
+		for(d in listData['dates']){
+			prevDates+=1;
+			if(new Date(d) > new Date(lastKnownDate)){
+				lastKnownDate=d;
+			}
+		}
+		if(prevDates==0){
+			listData['dates'][today]={};
+		}else{
+			//deep copy
+			listData['dates'][today]=JSON.parse(JSON.stringify(listData['dates'][lastKnownDate]));
+			for(l in listData['dates'][today]){
+				for(t in listData['dates'][today][l]['toggles']){
+					listData['dates'][today][l]['toggles'][t]['toggle']=false;
+				}
+			}
+		}
+		
 	}
 	/*
 	for(l in listData){
@@ -87,11 +106,11 @@ function loadList(){
 		}
 	}*/
 	
-	buildDateColorData(0);
+	buildDateColorData(dateOffset);
 	
-	console.log('listdata: ' + listData);
-	for(l in listData){
-		addListItem(listData[l]);
+	//console.log('listdata: ' + listData);
+	for(l in listData['dates'][today]){
+		addListItem(listData['dates'][today][l]);
 	}
 }
 
@@ -99,10 +118,10 @@ function loadList(){
 dateWeights = [0.17,0.10,0.4,0.3,0.2,0.1];
 dateWeight=dateWeights[0];
 function buildDateColorData(offset){
-	//use listDataDates to uhhh
+	//use listData['dates'] to uhhh
 	//idk iterate through previous week
 	//n then hafta, ffs? O_o;
-	//okay so put listData by item id into listDataDates
+	//okay so put listData by item id into listData['dates']
 	//and then for each toggle
 	//we just need a 0 or 1
 	
@@ -114,41 +133,42 @@ function buildDateColorData(offset){
 	//dateWeights = [.5,.3,.15,.075,0.0325,0.01625];//k but let's fix that
 	//dateWeights = [0.35,0.25,0.14,0.11,0.08,0.07];//betrars
 	//moved that ^
-	for(l in listData){
-		for(t in listData[l]['toggles']){
-			listData[l]['toggles'][t]['color']=0;
+	for(l in listData['dates'][today]){
+		for(t in listData['dates'][today][l]['toggles']){
+			listData['dates'][today][l]['toggles'][t]['color']=0;
 		}
 	}
 	for(var i=0;i<7;i++){		
+		//reset stored values
 		dateCheck = new Date();
 		dateCheck.setDate(dateCheck.getDate()-offset-i);
-		dateToCheck = dateCheck.getFullYear()+'_'+(dateCheck.getMonth()+1)+'_'+dateCheck.getDate();
+		dateToCheck = dateCheck.getFullYear()+'-'+(dateCheck.getMonth()+1)+'-'+dateCheck.getDate();
 		
 		console.log('CHECK: ' + dateToCheck);
-		if(dateToCheck in listDataDates){
+		if(dateToCheck in listData['dates']){
 			//kay so check everything in listDate
 			console.log("CHECKING: " + dateToCheck);
-			for(l in listData){
+			for(l in listData['dates'][today]){
 				console.log("CHECKING.... " + l);
-				if(l in listDataDates[dateToCheck]){
-					console.log('ADDINGS: ' + JSON.stringify(listDataDates[dateToCheck]));
-					for(t in listData[l]['toggles']){
-						//if('toggles' in listDataDates[l]){
-						//	console.log(listDataDates[l]['toggles']);
-						if((listDataDates[dateToCheck][l]['toggles'][t]['color']!=0 && i==0) || listDataDates[dateToCheck][l]['toggles'][t]['toggle']){
-							listData[l]['toggles'][t]['color']+=dateWeights[i];
+				if(l in listData['dates'][dateToCheck]){
+					console.log('ADDINGS: ' + JSON.stringify(listData['dates'][dateToCheck]));
+					for(t in listData['dates'][today][l]['toggles']){
+						//if('toggles' in listData['dates'][l]){
+						//	console.log(listData['dates'][l]['toggles']);
+						if(listData['dates'][dateToCheck][l]['toggles'][t]['toggle']){
+							listData['dates'][today][l]['toggles'][t]['color']+=dateWeights[i];
 							if(i==0){
-								listData[l]['toggles'][t]['toggle']=listDataDates[dateToCheck][l]['toggles'][t]['toggle'];
+								listData['dates'][today][l]['toggles'][t]['toggle']=listData['dates'][dateToCheck][l]['toggles'][t]['toggle'];
 							}
 						}
-							console.log('has date: ' +i + ': '+ listData[l]['toggles'][t]['color']);
+							//console.log('has date: ' +i + ': '+ listData[l]['toggles'][t]['color']);
 						//}
 					}
 				}else{
-					/*listDataDates[dateToCheck][l]={'toggles':{}};
+					/*listData['dates'][dateToCheck][l]={'toggles':{}};
 					for(t in listData[dateToCheck][l]['toggles']){
-						listDataDates[dateToCheck][l]['toggles'][t]={};
-						listDataDates[dateToCheck][l]['toggles'][t]['color']=listData[dateToCheck][l]['toggles'][t]['color'];
+						listData['dates'][dateToCheck][l]['toggles'][t]={};
+						listData['dates'][dateToCheck][l]['toggles'][t]['color']=listData[dateToCheck][l]['toggles'][t]['color'];
 						console.log('has no date: ' + listData[dateToCheck][l]['toggles'][t]['color']);
 					}*/
 				}
@@ -157,22 +177,40 @@ function buildDateColorData(offset){
 	}
 }
 
+function checkForNewDate(){
+	date = new Date();
+	date.setDate(date.getDate()-dateOffset);
+	newtoday = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+	if(today!=newtoday){
+		listData['dates'][newtoday]=JSON.parse(JSON.stringify(listData['dates'][today]));
+		for(l in listData['dates'][newtoday]){
+			for(t in listData['dates'][newtoday][l]['toggles']){
+				listData['dates'][newtoday][l]['toggles'][t]['toggle']=false;
+			}
+		}
+		today = newtoday;
+		saveList();
+	}
+}
 
 maxID=0;
 function addListItem(dat){
+	checkForNewDate();
 	//console.log("MAX: " + maxID);
+	console.log("ADDING ITEM");
+	console.log(today);
 	console.log('dat');
-	console.log(dat);
+	console.log(JSON.stringify(dat));
 	if(!('id' in dat)){
-		listItemID='task'+maxID;
+		listItemID='task'+listData['index']++;//maxID;
 		dat['id']=listItemID;
 		dat['toggles']={}
-		listData[listItemID]=dat;
+		listData['dates'][today][listItemID]=dat;
 		maxID++;
 	}else{
 		listItemID=dat['id'];
-		if(listItemID.replace('task','')>=maxID){
-			maxID=listItemID.replace('task','')+1;
+		if(listItemID.replace('task','')>=listData['index']){
+			listData['index']=listItemID.replace('task','')+1;
 		}
 	}
 	//console.log(maxID);
@@ -185,15 +223,15 @@ function addListItem(dat){
 		toggleBG='#ffffff';
 		toggleOpacity=1;
 		//console.log(toggleID);
-		if(!(toggleID in listData[listItemID]['toggles'])){
-			listData[listItemID]['toggles'][toggleID]={'color':0,'toggle':false};
+		if(!(toggleID in listData['dates'][today][listItemID]['toggles'])){
+			listData['dates'][today][listItemID]['toggles'][toggleID]={'color':0,'toggle':false};
 		}else{
 			//console.log('has toggle');
 			//console.log(listData[listItemID]['toggles'][toggleID]['toggle']);
 			//if(listData[listItemID]['toggles'][toggleID]['toggle']==true){
-			if(listData[listItemID]['toggles'][toggleID]['color']!=0){
+			if(listData['dates'][today][listItemID]['toggles'][toggleID]['color']!=0){
 				toggleBG='#ff66cc';
-				toggleOpacity=listData[listItemID]['toggles'][toggleID]['color'];
+				toggleOpacity=listData['dates'][today][listItemID]['toggles'][toggleID]['color'];
 			}else{
 				toggleOpacity=1;
 			}
@@ -203,6 +241,20 @@ function addListItem(dat){
 		//console.log('togglebg: '+toggleBG);
 		$('<div />',{'class':'toggle','id':toggleID,'onclick':toggleClick,'style':'background-color:'+toggleBG+';vertical-align:middle;opacity:'+toggleOpacity}).appendTo(listItem);
 		listItemCount--;
+		if(today!=realToday){
+			console.log('not real day!');
+			doffs_temp=0;
+			offs_dir = dateOffset / Math.abs(dateOffset);
+			console.log(doffs_temp);
+			console.log(doffs_temp - dateOffset);
+			while(Math.abs(doffs_temp - dateOffset)>=0){
+				date = new Date();
+				date.setDate(date.getDate()+doffs_temp);
+				dday = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+				listData['dates'][dday][listItemID]={'toggles':{toggleID:{'color':0,'toggle':false}}};
+				doffs_temp+=offs_dir;
+			}
+		}
 	}
 	$('<div />',{'class':'listText','text':dat['title']}).appendTo(listItem);
 	listItem.appendTo($('#list'));
@@ -221,13 +273,11 @@ function removeListItem(pos,typ){
 	}
 	if(removeClickTracker[pos][typ]>4){
 		if(typ=='remove'){//remove today
-			delete listData[pos];
-			delete listDataDates[today][pos];
+			delete listData['dates'][today][pos];
 		}else if(typ=='delete'){//remove all
-			for(d in listDataDates){
-				delete listDataDates[d][pos];//task1
+			for(d in listData['dates']){
+				delete listData['dates'][d][pos];//task1
 			}
-			delete listData[pos];
 		}
 		$('#itemEditor'+pos).remove();
 		$('#'+pos).remove();
@@ -239,12 +289,12 @@ function updateListItem(pos){
 }
 removeClickTracker={};
 function populateListEditor(){
-	for(d in listData){
+	for(d in listData['dates'][today]){
 		listEditorItem = $('<div />',{'id':'itemEditor'+d});
 		$("<label />", {'for':'edittask'+d, 'style':'padding-right:4px','text':'Task'}).appendTo(listEditorItem);
-		$("<input />", {'id':'edittask'+d, 'style':'padding-right:4px;padding-left:12px', 'value':listData[d]['title']}).appendTo(listEditorItem);
+		$("<input />", {'id':'edittask'+d, 'style':'padding-right:4px;padding-left:12px', 'value':listData['dates'][today][d]['title']}).appendTo(listEditorItem);
 		$("<label />", {'for':'editcount'+d, 'style':'padding-right:4px','text':'Count'}).appendTo(listEditorItem);
-		$("<input />", {'id':'editcount'+d, 'style':'padding-right:4px;padding-left:12px', 'value':listData[d]['count']}).appendTo(listEditorItem);
+		$("<input />", {'id':'editcount'+d, 'style':'padding-right:4px;padding-left:12px', 'value':listData['dates'][today][d]['count']}).appendTo(listEditorItem);
 		$("<button />", {'id':'editbutton'+d, 'type':'submit', 'onclick':"updateListItem('"+d+"');", 'text':'Update Task'}).appendTo(listEditorItem);
 		$("<button />", {'id':'removebutton'+d, 'type':'submit', 'onclick':"removeListItem('"+d+"','remove');", 'text':'Remove Task'}).appendTo(listEditorItem);
 		$("<button />", {'id':'deletebutton'+d, 'type':'submit', 'onclick':"removeListItem('"+d+"','delete');", 'text':'Delete Task'}).appendTo(listEditorItem);
@@ -256,17 +306,14 @@ function populateListEditor(){
 	}
 }
 function clear(){
-	$('#list').remove();
-	listData={};
-	listDataDates={};
-	listList=[];
+	$('#list').empty();
 }
 function nextDate(){
 	dateOffset+=1;
 	$('#curDate').text(dateOffset);
 	date = new Date();
 	date.setDate(date.getDate()-dateOffset);
-	today = date.getFullYear()+'_'+(date.getMonth()+1)+'_'+date.getDate();
+	today = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
 	clear();
 	build();
 }
@@ -275,7 +322,7 @@ function prevDate(){
 	$('#curDate').text(dateOffset);
 	date = new Date();
 	date.setDate(date.getDate()+dateOffset);
-	today = date.getFullYear()+'_'+(date.getMonth()+1)+'_'+date.getDate();
+	today = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
 	clear();
 	build();
 }
@@ -284,11 +331,11 @@ function build(){
 }
 dateOffset=0;
 listData={};
-listDataDates={};
 listList=[];
 date = new Date();
-date.setDate(date.getDate());
-today = date.getFullYear()+'_'+(date.getMonth()+1)+'_'+date.getDate();
+date.setDate(date.getDate()-dateOffset);
+today = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+realToday = today;
 console.log(today);
 
 function addTask(){
@@ -352,9 +399,6 @@ window.setInterval(function(){
 				<div id="listEditor"></div>
 				<div class="col-12">
 					<div class="row">
-						<div onclick="prevDate()" style="background-color: rgba(255, 102, 204, 0.35);width:32px;height:32px;"></div>
-						<div id="curDate">0</div>
-						<div onclick="nextDate()" style="background-color: rgba(255, 102, 204, 0.35);width:32px;height:32px;"></div>
 					</div>
 				</div>
 			</div>
@@ -364,10 +408,14 @@ window.setInterval(function(){
 	</div>
 </div>
 <script>
+//
+//						<div onclick="prevDate()" style="background-color: rgba(255, 102, 204, 0.35);width:32px;height:32px;"></div>
+//						<div id="curDate">0</div>
+//						<div onclick="nextDate()" style="background-color: rgba(255, 102, 204, 0.35);width:32px;height:32px;"></div>
 loadList();
 populateListEditor();
 //localStorage.todoListDates={};
-//listDataDates={};
+//listData['dates']={};
 //[]=//addListItem({"title":"Brekkies","count":1});
 //addListItem({"title":"Elliptical","count":1});
 //addListItem({"title":"Shawur","count":1});
