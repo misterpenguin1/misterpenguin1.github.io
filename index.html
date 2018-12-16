@@ -10,9 +10,7 @@
 .toggle{
 	width:64px;
 	height:64px;
-	border:solid 1px #9C9C9C;
 	display:inline-block;
-	box-shadow: 0px 0px 0px 1px black;
 }
 .listText{
 	display:inline-block;
@@ -64,7 +62,7 @@ function toggle(itemID,id){
 		$('#'+id).css('opacity',listData['dates'][today][itemID]['toggles'][id]['color']);
 	}else{
 		console.log('setting to: ' + 'ffffffffffffffffffffffffffffffffff');
-		$('#'+id).css('background-color','#ffffff');
+		$('#'+id).css('background-color','#e0e0eb');
 		$('#'+id).css('opacity',1);
 	}
 	saveList();
@@ -231,7 +229,7 @@ function addListItem(dat){
 	listItemCount=dat['count'];
 	while(listItemCount>0){
 		toggleID=listItemID+'_'+listItemCount;
-		toggleBG='#ffffff';
+		toggleBG='#e0e0eb';
 		toggleOpacity=1;
 		//console.log(toggleID);
 		if(!(toggleID in listData['dates'][today][listItemID]['toggles'])){
