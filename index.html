@@ -62,7 +62,7 @@ function toggle(itemID,id){
 		$('#'+id).css('opacity',listData['dates'][today][itemID]['toggles'][id]['color']);
 	}else{
 		console.log('setting to: ' + 'ffffffffffffffffffffffffffffffffff');
-		$('#'+id).css('background-color','#e0e0eb');
+		$('#'+id).css('background-color','#fff8ff');
 		$('#'+id).css('opacity',1);
 	}
 	saveList();
@@ -229,7 +229,7 @@ function addListItem(dat){
 	listItemCount=dat['count'];
 	while(listItemCount>0){
 		toggleID=listItemID+'_'+listItemCount;
-		toggleBG='#e0e0eb';
+		toggleBG='#fff8ff';
 		toggleOpacity=1;
 		//console.log(toggleID);
 		if(!(toggleID in listData['dates'][today][listItemID]['toggles'])){
