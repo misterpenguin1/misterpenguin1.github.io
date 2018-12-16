@@ -28,6 +28,16 @@
 }
 </style>
 <script>
+function cloneObject(obj) {
+    var clone = {};
+    for(var i in obj) {
+        if(obj[i] != null &&  typeof(obj[i])=="object")
+            clone[i] = cloneObject(obj[i]);
+        else
+            clone[i] = obj[i];
+    }
+    return clone;
+}
 function getHexAlpha(colorVal){
 	console.log(colorVal);
 	if(colorVal>1){
@@ -89,7 +99,7 @@ function loadList(){
 			listData['dates'][today]={};
 		}else{
 			//deep copy
-			listData['dates'][today]=JSON.parse(JSON.stringify(listData['dates'][lastKnownDate]));
+			listData['dates'][today]=cloneObject(listData['dates'][lastKnownDate]);
 			for(l in listData['dates'][today]){
 				for(t in listData['dates'][today][l]['toggles']){
 					listData['dates'][today][l]['toggles'][t]['toggle']=false;
@@ -182,7 +192,8 @@ function checkForNewDate(){
 	date.setDate(date.getDate()-dateOffset);
 	newtoday = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
 	if(today!=newtoday){
-		listData['dates'][newtoday]=JSON.parse(JSON.stringify(listData['dates'][today]));
+		//listData['dates'][newtoday]=JSON.parse(JSON.stringify(listData['dates'][today]));
+		listData['dates'][newtoday]=cloneObject(listData['dates'][today]);
 		for(l in listData['dates'][newtoday]){
 			for(t in listData['dates'][newtoday][l]['toggles']){
 				listData['dates'][newtoday][l]['toggles'][t]['toggle']=false;
