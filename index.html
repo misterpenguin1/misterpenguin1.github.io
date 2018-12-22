@@ -18,7 +18,7 @@
 	padding-top:6px;
 	padding-left:6px;
 	text-align:center;
-	font-size:36px;
+	font-size:22px;
 	font-weight:bold;
 	font-family: "Segoe UI";
 }
@@ -56,9 +56,9 @@ function toggle(itemID,id){
 	}else{
 		listData['dates'][today][itemID]['toggles'][id]['color']-=dateWeight;
 	}
-	console.log('setting to: ' + '#ff66cc'+getHexAlpha(listData['dates'][today][itemID]['toggles'][id]['color']));
+	console.log('setting to: ' + '#ff9ae3'+getHexAlpha(listData['dates'][today][itemID]['toggles'][id]['color']));
 	if(listData['dates'][today][itemID]['toggles'][id]['color']!=0){
-		$('#'+id).css('background-color','#ff66cc');//+getHexAlpha(listData[itemID]['toggles'][id]['color']));
+		$('#'+id).css('background-color','#ff9ae3');//+getHexAlpha(listData[itemID]['toggles'][id]['color']));
 		$('#'+id).css('opacity',listData['dates'][today][itemID]['toggles'][id]['color']);
 	}else{
 		console.log('setting to: ' + 'ffffffffffffffffffffffffffffffffff');
@@ -123,7 +123,8 @@ function loadList(){
 }
 
 //dateWeights = [0.35,0.25,0.14,0.11,0.08,0.07];
-dateWeights = [0.17,0.10,0.4,0.3,0.2,0.1];
+//dateWeights = [0.26,0.18,0.18,0.14,0.12,0.08,0.06];
+dateWeights = [0.26,0.16,0.18,0.12,0.08,0.20,0.24];
 dateWeight=dateWeights[0];
 function buildDateColorData(offset){
 	//use listData['dates'] to uhhh
@@ -226,6 +227,8 @@ function addListItem(dat){
 	listList.push(listItemID);
 	listItemClass='col-6';//+(dat['count']*3);
 	listItem = $('<div />',{'class':'col '+listItemClass,'style':'padding-bottom:12px'});
+	listItemIns = $('<div />',{'class':'row'});
+	listItemTogs = $('<div />',{'class':'col-10'});
 	listItemCount=dat['count'];
 	while(listItemCount>0){
 		toggleID=listItemID+'_'+listItemCount;
@@ -239,7 +242,7 @@ function addListItem(dat){
 			//console.log(listData[listItemID]['toggles'][toggleID]['toggle']);
 			//if(listData[listItemID]['toggles'][toggleID]['toggle']==true){
 			if(listData['dates'][today][listItemID]['toggles'][toggleID]['color']!=0){
-				toggleBG='#ff66cc';
+				toggleBG='#ff9ae3';
 				toggleOpacity=listData['dates'][today][listItemID]['toggles'][toggleID]['color'];
 			}else{
 				toggleOpacity=1;
@@ -248,7 +251,7 @@ function addListItem(dat){
 		}
 		toggleClick = "toggle('"+listItemID+"','"+toggleID+"');";
 		//console.log('togglebg: '+toggleBG);
-		$('<div />',{'class':'toggle','id':toggleID,'onclick':toggleClick,'style':'background-color:'+toggleBG+';vertical-align:middle;opacity:'+toggleOpacity}).appendTo(listItem);
+		$('<div />',{'class':'toggle','id':toggleID,'onclick':toggleClick,'style':'background-color:'+toggleBG+';vertical-align:middle;opacity:'+toggleOpacity}).appendTo(listItemTogs);
 		listItemCount--;
 		if(today!=realToday){
 			console.log('not real day!');
@@ -265,7 +268,9 @@ function addListItem(dat){
 			}
 		}
 	}
-	$('<div />',{'class':'listText','text':dat['title']}).appendTo(listItem);
+	listItemTogs.appendTo(listItemIns);
+	$('<div />',{'class':'listText col-2','text':dat['title'],'style':'text-align:left'}).appendTo(listItemIns);
+	listItemIns.appendTo(listItem);
 	listItem.appendTo($('#list'));
 	saveList();
 }
