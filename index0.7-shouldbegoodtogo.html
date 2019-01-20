@@ -8,17 +8,19 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <style>
 .toggle{
-	width:64px;
-	height:64px;
+	width:84px;
+	height:84px;
+	border:solid 1px #9C9C9C;
 	display:inline-block;
+	box-shadow: 0px 0px 0px 1px black;
 }
 .listText{
 	display:inline-block;
 	vertical-align:top;
-	padding-top:6px;
-	padding-left:6px;
+	padding-top:12px;
+	padding-left:12px;
 	text-align:center;
-	font-size:22px;
+	font-size:48px;
 	font-weight:bold;
 	font-family: "Segoe UI";
 }
@@ -26,16 +28,6 @@
 }
 </style>
 <script>
-function cloneObject(obj) {
-    var clone = {};
-    for(var i in obj) {
-        if(obj[i] != null &&  typeof(obj[i])=="object")
-            clone[i] = cloneObject(obj[i]);
-        else
-            clone[i] = obj[i];
-    }
-    return clone;
-}
 function getHexAlpha(colorVal){
 	console.log(colorVal);
 	if(colorVal>1){
@@ -56,13 +48,13 @@ function toggle(itemID,id){
 	}else{
 		listData['dates'][today][itemID]['toggles'][id]['color']-=dateWeight;
 	}
-	console.log('setting to: ' + '#ff9ae3'+getHexAlpha(listData['dates'][today][itemID]['toggles'][id]['color']));
+	console.log('setting to: ' + '#ff66cc'+getHexAlpha(listData['dates'][today][itemID]['toggles'][id]['color']));
 	if(listData['dates'][today][itemID]['toggles'][id]['color']!=0){
-		$('#'+id).css('background-color','#ff9ae3');//+getHexAlpha(listData[itemID]['toggles'][id]['color']));
+		$('#'+id).css('background-color','#ff66cc');//+getHexAlpha(listData[itemID]['toggles'][id]['color']));
 		$('#'+id).css('opacity',listData['dates'][today][itemID]['toggles'][id]['color']);
 	}else{
 		console.log('setting to: ' + 'ffffffffffffffffffffffffffffffffff');
-		$('#'+id).css('background-color','#fff8ff');
+		$('#'+id).css('background-color','#ffffff');
 		$('#'+id).css('opacity',1);
 	}
 	saveList();
@@ -86,7 +78,7 @@ function loadList(){
 		
 		
 		prevDates=0;
-		lastKnownDate='1942-02-01';
+		lastKnownDate='1942-2-1';
 		for(d in listData['dates']){
 			prevDates+=1;
 			if(new Date(d) > new Date(lastKnownDate)){
@@ -97,7 +89,7 @@ function loadList(){
 			listData['dates'][today]={};
 		}else{
 			//deep copy
-			listData['dates'][today]=cloneObject(listData['dates'][lastKnownDate]);
+			listData['dates'][today]=JSON.parse(JSON.stringify(listData['dates'][lastKnownDate]));
 			for(l in listData['dates'][today]){
 				for(t in listData['dates'][today][l]['toggles']){
 					listData['dates'][today][l]['toggles'][t]['toggle']=false;
@@ -123,8 +115,7 @@ function loadList(){
 }
 
 //dateWeights = [0.35,0.25,0.14,0.11,0.08,0.07];
-//dateWeights = [0.26,0.18,0.18,0.14,0.12,0.08,0.06];
-dateWeights = [0.26,0.16,0.18,0.12,0.08,0.20,0.14];
+dateWeights = [0.17,0.10,0.4,0.3,0.2,0.1];
 dateWeight=dateWeights[0];
 function buildDateColorData(offset){
 	//use listData['dates'] to uhhh
@@ -191,8 +182,7 @@ function checkForNewDate(){
 	date.setDate(date.getDate()-dateOffset);
 	newtoday = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
 	if(today!=newtoday){
-		//listData['dates'][newtoday]=JSON.parse(JSON.stringify(listData['dates'][today]));
-		listData['dates'][newtoday]=cloneObject(listData['dates'][today]);
+		listData['dates'][newtoday]=JSON.parse(JSON.stringify(listData['dates'][today]));
 		for(l in listData['dates'][newtoday]){
 			for(t in listData['dates'][newtoday][l]['toggles']){
 				listData['dates'][newtoday][l]['toggles'][t]['toggle']=false;
@@ -227,14 +217,11 @@ function addListItem(dat){
 	listList.push(listItemID);
 	listItemClass='col-6';//+(dat['count']*3);
 	listItem = $('<div />',{'class':'col '+listItemClass,'style':'padding-bottom:12px'});
-	listItemIns = $('<div />',{'class':'row'});
-	listItemTogs = $('<div />',{'class':'col-10'});
 	listItemCount=dat['count'];
 	while(listItemCount>0){
 		toggleID=listItemID+'_'+listItemCount;
-		toggleBG='#fff8ff';
+		toggleBG='#ffffff';
 		toggleOpacity=1;
-		borderSize=0.35;
 		//console.log(toggleID);
 		if(!(toggleID in listData['dates'][today][listItemID]['toggles'])){
 			listData['dates'][today][listItemID]['toggles'][toggleID]={'color':0,'toggle':false};
@@ -243,22 +230,16 @@ function addListItem(dat){
 			//console.log(listData[listItemID]['toggles'][toggleID]['toggle']);
 			//if(listData[listItemID]['toggles'][toggleID]['toggle']==true){
 			if(listData['dates'][today][listItemID]['toggles'][toggleID]['color']!=0){
-				toggleBG='#ff9ae3';
+				toggleBG='#ff66cc';
 				toggleOpacity=listData['dates'][today][listItemID]['toggles'][toggleID]['color'];
 			}else{
 				toggleOpacity=1;
 			}
-			if(listData['dates'][today][listItemID]['toggles'][toggleID]['color']>1){
-				borderSize=0;
-			}else{
-				borderSize=(1-listData['dates'][today][listItemID]['toggles'][toggleID]['color']);
-			}
-			borderSize*=10;
 			//}
 		}
 		toggleClick = "toggle('"+listItemID+"','"+toggleID+"');";
 		//console.log('togglebg: '+toggleBG);
-		$('<div />',{'class':'toggle','id':toggleID,'onclick':toggleClick,'style':'background-color:'+toggleBG+';vertical-align:middle;opacity:'+toggleOpacity+';border: '+borderSize+'px solid white;'}).appendTo(listItemTogs);
+		$('<div />',{'class':'toggle','id':toggleID,'onclick':toggleClick,'style':'background-color:'+toggleBG+';vertical-align:middle;opacity:'+toggleOpacity}).appendTo(listItem);
 		listItemCount--;
 		if(today!=realToday){
 			console.log('not real day!');
@@ -275,9 +256,7 @@ function addListItem(dat){
 			}
 		}
 	}
-	listItemTogs.appendTo(listItemIns);
-	$('<div />',{'class':'listText col-2','text':dat['title'],'style':'text-align:left'}).appendTo(listItemIns);
-	listItemIns.appendTo(listItem);
+	$('<div />',{'class':'listText','text':dat['title']}).appendTo(listItem);
 	listItem.appendTo($('#list'));
 	saveList();
 }
@@ -405,7 +384,7 @@ window.setInterval(function(){
 <body style="overflow:hidden;">
 <div class="container-responsive">
 		<div onclick="toggleAdd()"	style="background-color: rgba(255, 102, 204, 0.35);width:32px;height:32px;"></div>
-	<div class="row" style="padding:32px;display:none;overflow:scroll;" id="addItem">
+	<div class="row" style="padding:32px;display:none;" id="addItem">
 		<div class="col-12">
 			<div class="row">
 				<label for="task" style="padding-right:4px;">Task </label><input type="text" id="task"><br>
