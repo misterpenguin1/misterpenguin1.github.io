@@ -65,6 +65,8 @@ function toggle(itemID,id){
 		$('#'+id).css('background-color','#fff8ff');
 		$('#'+id).css('opacity',1);
 	}
+	borderSize = (1 - listData['dates'][today][itemID]['toggles'][id]['color'])*10;
+	$('#'+id).css('border',borderSize+'px solid white');
 	saveList();
 }
 function saveList(){
