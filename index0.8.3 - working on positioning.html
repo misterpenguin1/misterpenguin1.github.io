@@ -11,7 +11,6 @@
 	width:48px;
 	height:48px;
 	display:inline-block;
-	box-sizing:border-box;
 }
 .listText{
 	display:inline-block;
@@ -63,14 +62,10 @@ function toggle(itemID,id){
 		$('#'+id).css('opacity',listData['dates'][today][itemID]['toggles'][id]['color']);
 	}else{
 		console.log('setting to: ' + 'ffffffffffffffffffffffffffffffffff');
-		//$('#'+id).css('background-color','#fff8ff');
-		//$('#'+id).css('opacity',1);
-		$('#'+id).css('background-color','#ff9ae3');
-		$('#'+id).css('opacity',0.14);
-		
-		
+		$('#'+id).css('background-color','#fff8ff');
+		$('#'+id).css('opacity',1);
 	}
-	borderSize = (1 - listData['dates'][today][itemID]['toggles'][id]['color'])*8;
+	borderSize = (1 - listData['dates'][today][itemID]['toggles'][id]['color'])*10;
 	$('#'+id).css('border',borderSize+'px solid white');
 	saveList();
 }
@@ -131,7 +126,6 @@ function loadList(){
 
 //dateWeights = [0.35,0.25,0.14,0.11,0.08,0.07];
 //dateWeights = [0.26,0.18,0.18,0.14,0.12,0.08,0.06];
-//dateWeights = [0.26,0.16,0.18,0.12,0.08,0.20,0.14];
 dateWeights = [0.26,0.16,0.18,0.12,0.08,0.20,0.14];
 dateWeight=dateWeights[0];
 function buildDateColorData(offset){
@@ -263,21 +257,20 @@ function addListItem(dat){
 	//console.log(maxID);
 	listList.push(listItemID);
 	listItemClass='col-3';//+(dat['count']*3);
-	//listItem = $('<div />',{'class':'col '+listItemClass,'style':'border:8px solid #ff9ae33c;padding:0px;padding-bottom:12px'});
-	listItem = $('<div />',{'class':'col '+listItemClass,'style':'padding:0px;padding-bottom:12px'});
+	listItem = $('<div />',{'class':'col '+listItemClass,'style':'border:8px solid #ff9ae33c;padding:0px;padding-bottom:12px'});
 	
 	list_items[listItemID]=listItem;
 	
 	listItemIns = $('<div />',{'class':'row'});
 	$('<div />',{'class':'listText col-12','text':dat['title'],'style':'text-align:center'}).appendTo(listItemIns);
-	listItemTogs = $('<div />',{'class':'row','style':'justify-content:center'});//,{'class':'col-12'});
-	//listItemTogs = $('<div />',{'class':'d-flex justify-content-center'});//,{'class':'col-12'});
+	//listItemTogs = $('<div />',{'class':'row','style':'justify-content:center'});//,{'class':'col-12'});
+	listItemTogs = $('<div />',{'class':'d-flex justify-content-center'});//,{'class':'col-12'});
 	$('<div />',{'class':'col-1'}).appendTo(listItemTogs);
 	listItemCount=dat['count'];
 	while(listItemCount>0){
 		toggleID=listItemID+'_'+listItemCount;
-		toggleBG='#ff9ae3';//'#fff8ff';
-		toggleOpacity=0.14//1;
+		toggleBG='#fff8ff';
+		toggleOpacity=1;
 		borderSize=0.35;
 		//console.log(toggleID);
 		if(!(toggleID in listData['dates'][today][listItemID]['toggles'])){
@@ -290,14 +283,14 @@ function addListItem(dat){
 				toggleBG='#ff9ae3';
 				toggleOpacity=listData['dates'][today][listItemID]['toggles'][toggleID]['color'];
 			}else{
-				toggleOpacity=0.14;
+				toggleOpacity=1;
 			}
 			if(listData['dates'][today][listItemID]['toggles'][toggleID]['color']>1){
 				borderSize=0;
 			}else{
 				borderSize=(1-listData['dates'][today][listItemID]['toggles'][toggleID]['color']);
 			}
-			borderSize*=8;
+			borderSize*=10;
 			//}
 		}
 		toggleClick = "toggle('"+listItemID+"','"+toggleID+"');";
