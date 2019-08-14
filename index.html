@@ -509,6 +509,15 @@ function resetTasks(){
 
 
 function saveFile(){
+	
+    if (document.execCommand) {
+        var oWin = window.open("about:blank", "_blank");
+        //To add a new line, you need to use <br>
+        oWin.document.writeln(JSON.stringify(listData));
+        oWin.document.close();
+    }
+}
+/*
 	var tseed=today+"."+date.getHours()+"."+date.getMinutes()+"."+date.getSeconds() ;
 	var exportName="listy"+tseed;
     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(listData));
@@ -518,14 +527,7 @@ function saveFile(){
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-	
-    if (document.execCommand) {
-        var oWin = window.open("about:blank", "_blank");
-        //To add a new line, you need to use <br>
-        oWin.document.writeln(JSON.stringify(listData));
-        oWin.document.close();
-    }
-}
+	*/
 
 
 /*
