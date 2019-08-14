@@ -374,13 +374,13 @@ function populateListEditor(){
 		if(!(d in listEditorItems)){
 			listEditorItem = $('<div />',{'id':'itemEditor'+d});
 			listEditorItems[d]=listEditorItem;
-			$("<label />", {'for':'editgroup'+d, 'style':'padding-right:4px','text':'Group'}).appendTo(listEditorItem);
+			//$("<label />", {'for':'editgroup'+d, 'style':'padding-right:4px','text':'Group'}).appendTo(listEditorItem);
 			$("<input />", {'id':'editgroup'+d, 'style':'padding-right:4px;padding-left:12px', 'value':listData['dates'][today][d]['group']}).appendTo(listEditorItem);
 			$("<input />", {'id':'edittask'+d, 'style':'padding-right:4px;padding-left:12px', 'value':listData['dates'][today][d]['title']}).appendTo(listEditorItem);
-			$("<label />", {'for':'editcount'+d, 'style':'padding-right:4px','text':'Count'}).appendTo(listEditorItem);
+			//$("<label />", {'for':'editcount'+d, 'style':'padding-right:4px','text':'Count'}).appendTo(listEditorItem);
 			$("<input />", {'id':'editcount'+d, 'style':'padding-right:4px;padding-left:12px', 'value':listData['dates'][today][d]['count']}).appendTo(listEditorItem);
-			$("<button />", {'id':'editbutton'+d, 'type':'submit', 'onclick':"updateListItem('"+d+"');", 'text':'Update Task'}).appendTo(listEditorItem);
-			$("<button />", {'id':'removebutton'+d, 'type':'submit', 'onclick':"removeListItem('"+d+"','remove');", 'text':'Remove Task'}).appendTo(listEditorItem);
+			//$("<button />", {'id':'editbutton'+d, 'type':'submit', 'onclick':"updateListItem('"+d+"');", 'text':'Update Task'}).appendTo(listEditorItem);
+			//$("<button />", {'id':'removebutton'+d, 'type':'submit', 'onclick':"removeListItem('"+d+"','remove');", 'text':'Remove Task'}).appendTo(listEditorItem);
 			$("<button />", {'id':'deletebutton'+d, 'type':'submit', 'onclick':"removeListItem('"+d+"','delete');", 'text':'Delete Task'}).appendTo(listEditorItem);
 			listEditorItem.appendTo($("#listEditor"));
 		}
@@ -489,8 +489,8 @@ window.setInterval(function(){
 		<div class="col-12">
 			<div class="row">
 				<label for="group" style="padding-right:4px;">Group </label><input type="text" id="group"><br>
-				<label for="task" style="padding-right:4px;">Task </label><input type="text" id="task"><br>
-				<label for="count" style="padding-right:4px;padding-left:12px;">Count </label><input type="text" id="count" value=5><br>
+				<label for="task" style="padding-right:4px;padding-left:4px;">Task </label><input type="text" id="task"><br>
+				<label for="count" style="padding-right:4px;padding-left:8px;">Count </label><input type="text" id="count" value=5><br>
 				<button type="submit" onclick="addTask()">Add Task</button>
 				<button type="submit" id="resetTasks" onclick="resetTasks()">Delete All Tasks Forever</button>
 			</div>
