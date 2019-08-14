@@ -1,0 +1,14 @@
+
+		for(c in cats){
+				cats[c]['list'].remove();
+				cats[c]['header'].remove();
+				delete cats[c];
+			}
+		}
+$("#listEditorInternal").empty();
+$("#listcategories").empty();
+$("#categories").empty();
+
+
+list_items={};
+maxID=0;

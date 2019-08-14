@@ -1,0 +1,70 @@
+<html>
+<body>
+<button type="button" onclick="SaveContents();">Save</button>
+<script>
+/**
+ * Workarounds for browser like ie8 that doesn't supports Blobs...
+ */
+function SaveContents() {
+    if (document.execCommand) {
+        var oWin = window.open("about:blank", "_blank");
+        //To add a new line, you need to use <br>
+        oWin.document.writeln(JSON.stringify({"DATA":"VAL"}));
+        oWin.document.close();
+        
+        //Need to specify the filename that we are going to set here
+        oWin.document.execCommand('SaveAs', true, "output.json");
+        //oWin.close();
+        if (!success) {}
+    }
+}
+
+/**
+ * Most of the Blob related codes are mainly here but if the browser doesn't supports Blob, then you would redirect to the function SaveContents()
+ */
+function saveTextAsFile() {
+    //For Blobs, use \r\n for new line
+    var textToWrite = "First Line\r\n";
+    textToWrite += "Second Line\r\n";
+    textToWrite += "Third Line";
+    
+    //Check if browser supports Blob
+    if (window.Blob) {
+        var textFileAsBlob = new Blob([textToWrite], {
+            type: 'text/plain'
+        });
+        
+        //Need to specify the filename that we are going to set here
+        var fileNameToSaveAs = "output.txt";
+        var downloadLink = document.createElement("a");
+        downloadLink.download = fileNameToSaveAs;
+        downloadLink.innerHTML = "Download File";
+        if (window.webkitURL != null) {
+            // Chrome allows the link to be clicked
+            // without actually adding it to the DOM.
+            downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+        } else {
+            // Firefox requires the link to be added to the DOM
+            // before it can be clicked.
+            downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+            downloadLink.onclick = destroyClickedElement;
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+        }
+        if (navigator.msSaveBlob) {
+            navigator.msSaveBlob(textFileAsBlob, fileNameToSaveAs);
+        } else {
+            downloadLink.click();
+        }
+    } else {
+        SaveContents();
+    }
+}
+
+//Remove the downloadable link
+function destroyClickedElement(event) {
+    document.body.removeChild(event.target);
+}
+</script>
+</body>
+</html>

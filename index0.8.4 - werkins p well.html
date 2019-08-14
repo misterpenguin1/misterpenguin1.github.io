@@ -9,9 +9,9 @@
 <style>
 .toggle{
 	width:48px;
-	max-width:48px;
 	height:48px;
-	display:block;
+	display:inline-block;
+	box-sizing:border-box;
 }
 .listText{
 	display:inline-block;
@@ -75,16 +75,7 @@ function toggle(itemID,id){
 	saveList();
 }
 function saveList(){
-	localStorage.todoList = JSON.stringify(listData);	
-	date = new Date();
-	date.setDate(date.getDate()-dateOffset);
-	new_today = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
-	if(new_today!=today){
-		//loadList();
-		today = new_today;
-		
-		realToday = new_today;
-	}
+	localStorage.todoList = JSON.stringify(listData);
 }
 function loadList(){
 	//k load dates
@@ -407,55 +398,13 @@ function clear(){
 	$('#list').empty();
 }
 function nextDate(){
-/*
 	dateOffset+=1;
 	$('#curDate').text(dateOffset);
 	date = new Date();
 	date.setDate(date.getDate()-dateOffset);
 	today = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
 	clear();
-	build();*/
-	
-	dateOffset+=1;
-	date = new Date();
-	date.setDate(date.getDate()+dateOffset);
-	new_today = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
-	console.log(new_today);
-	console.log(today);
-	if(new_today!=today){
-		//loadList();
-		today = new_today;
-		
-		realToday = new_today;
-		console.log("new today: " + today);
-			if(!(today in listData['dates'])){
-		//listData['dates'][today]={};
-		//this is where logic to populate goes
-		console.log("NEW DAY, HORRAY!")
-		
-		prevDates=0;
-		lastKnownDate='1942-02-01';
-		for(d in listData['dates']){
-			prevDates+=1;
-			if(new Date(d) > new Date(lastKnownDate)){
-				lastKnownDate=d;
-			}
-		}
-		console.log("PREV DATES: " + prevDates);
-		if(prevDates==0){
-			listData['dates'][today]={};
-		}else{
-			//deep copy
-			listData['dates'][today]=cloneObject(listData['dates'][lastKnownDate]);
-			for(l in listData['dates'][today]){
-				for(t in listData['dates'][today][l]['toggles']){
-					listData['dates'][today][l]['toggles'][t]['toggle']=false;
-				}
-			}
-		}
-		
-	}
-	}
+	build();
 }
 function prevDate(){
 	dateOffset-=1;
@@ -515,13 +464,6 @@ function saveFile(){
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-	
-    if (document.execCommand) {
-        var oWin = window.open("about:blank", "_blank");
-        //To add a new line, you need to use <br>
-        oWin.document.writeln(JSON.stringify(listData));
-        oWin.document.close();
-    }
 }
 
 
@@ -562,7 +504,7 @@ window.setInterval(function(){
 			<div class="row">
 				<div id="listEditor"></div>
 				<div class="col-12">
-					<div class="row" id="listEditorInternal">
+					<div class="row">
 					</div>
 				</div>
 			</div>
@@ -570,7 +512,7 @@ window.setInterval(function(){
 		<br><br>
 		<button id="save-file" onclick="saveFile()">Save Tasks to File</button>
 	</div>
-	<div class="row" style="max-height:32px;margin-bottom:24px;" id="categories"></div>
+	<div class="row" style="max-height:32px;" id="categories"></div>
 	<div class="row" style="" id="lists">
 		<div class="col-12" style="" id="listcategories">
 		</div>
